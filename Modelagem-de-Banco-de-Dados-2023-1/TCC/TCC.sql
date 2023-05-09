@@ -6,6 +6,7 @@ CREATE DATABASE tcc;
 
 CREATE TABLE farmacia (
     id serial primary key,
+    categoria character varying(10),
     bairro text NOT NULL UNIQUE
 );
 
@@ -25,11 +26,11 @@ INSERT INTO esp(farmacia_id) VALUES
 (1);
 
 CREATE TABLE temperaturas (
-    id serial primary key,
     temperatura real NOT NULL,
     data date default current_date,
     hora time default current_time,
     esp_id integer references esp (id)
+    primary key (temperatura, data, hora)
 );
 
 INSERT INTO temperaturas(temperatura, esp_id) VALUES
