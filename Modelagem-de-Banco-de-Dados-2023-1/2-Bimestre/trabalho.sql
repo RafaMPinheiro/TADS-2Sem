@@ -7,12 +7,12 @@ CREATE DATABASE garagem_coletiva;
 CREATE TABLE cliente (
     id serial primary key,
     cpf character(11) UNIQUE NOT NULL,
-    nome character varying(100) NOT NULL,
-    data_nascimento date NOT NULL,
-    rua character varying(100) NOT NULL,
-    bairro character varying(50) NOT NULL,
-    complemento character varying(30) NOT NULL,
-    numero_casa character varying(8) NOT NULL
+    nome character varying(100),
+    data_nascimento date,
+    rua character varying(100),
+    bairro character varying(50),
+    complemento character varying(30),
+    numero_casa character varying(8)
 );
 
 INSERT INTO cliente (cpf, nome, data_nascimento, rua, bairro, complemento, numero_casa) VALUES 
@@ -22,7 +22,7 @@ INSERT INTO cliente (cpf, nome, data_nascimento, rua, bairro, complemento, numer
 
 CREATE TABLE modelo (
     id serial primary key,
-    descricao text NOT NULL,
+    descricao text,
     ano_lancamento date NOT NULL
 );
 
@@ -33,8 +33,8 @@ INSERT INTO modelo (descricao, ano_lancamento) VALUES
 
 CREATE TABLE veiculo (
     id serial primary key,
-    chassi character(17) UNIQUE NOT NULL,
-    placa character(7) UNIQUE NOT NULL,
+    chassi character(17) UNIQUE,
+    placa character(7) UNIQUE,
     cor character varying(15) NOT NULL,
     ano date NOT NULL,
     id_cliente integer references cliente(id),
@@ -52,9 +52,9 @@ CREATE TABLE vaga (
 );
 
 INSERT INTO vaga (andar) VALUES 
-(1),
-(2),
-(3);
+(1),(1),(1),
+(2),(2),(2),
+(3),(3),(3);
 
 
 CREATE TABLE vaga_veiculo (
@@ -85,7 +85,7 @@ SELECT * FROM veiculo WHERE id_modelo = 1;
 SELECT * FROM vaga_veiculo WHERE id_veiculo = 1;
 
 -- 6)
-SELECT id_veiculo AS veiculo, id_vaga AS vaga, age(saida, entrada) AS "Tempo na vaga" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
+SELECT id_veiculo AS veiculo, id_vaga AS vaga, saida - entrada AS "Tempo na vaga" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
 
 -- 7)
 SELECT COUNT(*) AS "Quantidade de veículos do modelo 2" FROM veiculo WHERE id_modelo = 2;
@@ -94,6 +94,9 @@ SELECT COUNT(*) AS "Quantidade de veículos do modelo 2" FROM veiculo WHERE id_m
 SELECT CAST(AVG(EXTRACT(YEAR FROM age(data_nascimento))) AS INT) AS "Média de idade dos clientes" FROM cliente;
 
 -- 9)
-SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 1 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 1;
-SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 1 na vaga 2 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
-SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 3 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 3;
+-- EXTRACT(EPOCH FROM saida - entrada) => saida - entrada em segundos 
+-- / 3600 => para converter para horas 
+-- CEIL => para arredondar para cima
+SELECT CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 1 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 1;
+SELECT CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 1 na vaga 2 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
+SELECT CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 3 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 3;

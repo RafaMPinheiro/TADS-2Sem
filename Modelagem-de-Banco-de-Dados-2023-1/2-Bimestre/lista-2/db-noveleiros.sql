@@ -71,3 +71,20 @@ VALUES
 ('Capítulo 1', '2022-01-10', 1),
 ('Capítulo 15', '2022-01-11', 3),
 ('Capítulo 44', '2022-01-11', 2);
+
+-- 2) select data_ultimo_capitulo from novelas where upper(nome) = upper('mistério de uma vida');
+-- 3) noveleiros=# select * from novelas where horario_exibicao IS NULL;
+-- 4) noveleiros=# SELECT * FROM atores WHERE UPPER(cidade) LIKE 'M%';
+-- 4) noveleiros=# SELECT * FROM atores WHERE cidade ILIKE 'M%';
+-- 5) noveleiros=# SELECT COUNT(*) as qtde FROM novelas where nome ILIKE 'VIDA%' OR nome ILIKE '%VIDA%' OR nome ILIKE '%VIDA' OR nome ILIKE 'VIDA';
+-- 6) noveleiros=# SELECT * FROM personagens ORDER BY nome ASC;
+-- 7) noveleiros=# SELECT * FROM personagens order by age(data_nascimento) desc;
+-- 8) noveleiros=# select count(*) as qtde_atores from atores;
+-- 9) noveleiros=# select count(*) from novelas;
+-- 10) noveleiros=# select count(*) from atores where sexo = 'F';
+-- 11) noveleiros=# select cast(avg(extract(year from age(data_nascimento))) as numeric(8,2)) as media_idade_personagens from personagens;
+-- 12) noveleiros=# SELECT * FROM personagens WHERE extract(year from age(data_nascimento)) < 15;
+-- 13) noveleiros=# select max(salario) as maior_salario from atores;
+-- 13) com subselect noveleiros=# SELECT nome, salario FROM atores where salario = (select max(salario) as maior_salario from atores);
+-- 14) noveleiros=# select min(salario) as menor_salario from atores;
+-- 15) noveleiros=# select sum(salario) as soma_salario from atores;
