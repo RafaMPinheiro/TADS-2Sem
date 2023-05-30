@@ -4,9 +4,11 @@ public class Ex1 {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
-        int fibo = fibo(7);
+        int n = in.nextInt();
 
-        System.out.println(fibo);
+        int fibo = fibo(n);
+
+        System.out.println("Termo da sequencia = " + fibo);
     }
 
     static int fibo(int n) {
