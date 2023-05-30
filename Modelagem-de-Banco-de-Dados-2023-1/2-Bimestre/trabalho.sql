@@ -60,14 +60,14 @@ INSERT INTO vaga (andar) VALUES
 CREATE TABLE vaga_veiculo (
     id_vaga_veiculo serial primary key,
     entrada timestamp DEFAULT current_timestamp,
-    saida timestamp,
+    saida timestamp DEFAULT current_timestamp + interval '2 hours',
     id_veiculo integer references veiculo(id),
     id_vaga integer references vaga(id)
 );
 
-INSERT INTO vaga_veiculo (saida, id_veiculo, id_vaga) VALUES 
-('2023-05-24 12:00:00', 1, 1),
-('2023-05-25 10:15:00', 3, 3);
+INSERT INTO vaga_veiculo (id_veiculo, id_vaga) VALUES 
+(1, 1),
+(3, 3);
 
 INSERT INTO vaga_veiculo (entrada, saida, id_veiculo, id_vaga) VALUES 
 ('2023-05-20 12:00:00', '2023-05-21 10:15:00', 1, 2);
@@ -96,4 +96,4 @@ SELECT CAST(AVG(EXTRACT(YEAR FROM age(data_nascimento))) AS INT) AS "Média de i
 -- 9)
 SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 1 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 1;
 SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 1 na vaga 2 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
-SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 3 pagou" FROM vaga_veiculo WHERE id_veiculo = 3;
+SELECT SUM(CAST(EXTRACT(EPOCH FROM age(saida, entrada) / 3600) AS INT) * 2) AS "Veiculo 3 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 3;
