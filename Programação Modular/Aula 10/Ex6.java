@@ -11,7 +11,7 @@ public class Ex6 {
             v[i] = in.nextInt();
         }
 
-        int maior = encontraMaior(v, tam);
+        int maior = encontraMaior(v, tam - 1);
         System.out.println(maior);
 
     }
@@ -23,8 +23,8 @@ public class Ex6 {
 
         int maior = encontraMaior(v, tam - 1);
 
-        if (v[tam - 1] > maior) {
-            return v[tam - 1];
+        if (v[tam] > maior) {
+            return v[tam];
         } else {
             return maior;
         }
