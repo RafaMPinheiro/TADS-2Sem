@@ -6,7 +6,7 @@ CREATE DATABASE garagem_coletiva;
 
 CREATE TABLE cliente (
     id serial primary key,
-    cpf character(11) UNIQUE NOT NULL,
+    cpf character(11) unique not null,
     nome character varying(100),
     data_nascimento date,
     rua character varying(100),
@@ -23,7 +23,7 @@ INSERT INTO cliente (cpf, nome, data_nascimento, rua, bairro, complemento, numer
 CREATE TABLE modelo (
     id serial primary key,
     descricao text,
-    ano_lancamento date NOT NULL
+    ano_lancamento date not null
 );
 
 INSERT INTO modelo (descricao, ano_lancamento) VALUES 
@@ -33,12 +33,12 @@ INSERT INTO modelo (descricao, ano_lancamento) VALUES
 
 CREATE TABLE veiculo (
     id serial primary key,
-    chassi character(17) UNIQUE,
-    placa character(7) UNIQUE,
-    cor character varying(15) NOT NULL,
-    ano date NOT NULL,
-    id_cliente integer references cliente(id),
-    id_modelo integer references modelo(id)
+    chassi character(17) unique,
+    placa character(7) unique,
+    cor character varying(15) not null,
+    ano date not null,
+    id_cliente integer REFERENCES cliente(id),
+    id_modelo integer REFERENCES modelo(id)
 );
 
 INSERT INTO veiculo (chassi, placa, cor, ano, id_cliente, id_modelo) VALUES 
@@ -46,23 +46,33 @@ INSERT INTO veiculo (chassi, placa, cor, ano, id_cliente, id_modelo) VALUES
 ('XYZ987WVU654TSR32', 'XYZ9876', 'Prata', '1997-01-01', 2, 2),
 ('PQR456MNO321LKJ54', 'PQR4567', 'Azul', '2012-01-01', 3, 2);
 
-CREATE TABLE vaga (
-    id serial primary key,
-    andar integer NOT NULL
+CREATE TABLE andar (
+    nome character(1) primary key
 );
 
-INSERT INTO vaga (andar) VALUES 
-(1),(1),(1),
-(2),(2),(2),
-(3),(3),(3);
+INSERT INTO andar (andar_nome) VALUES 
+('A'), ('A'), ('A'), ('A'), ('A'),
+('B'), ('B'), ('B'), ('B'), ('B'),
+('C'), ('C'), ('C'), ('C'), ('C');
 
+CREATE TABLE vaga (
+    id serial primary key,
+    nrm_vaga integer not null,
+    andar_nome character(1) REFERENCES andar(nome)
+    --primary key (nrm_vaga, andar)
+);
+
+INSERT INTO vaga (andar_nome) VALUES 
+('A'), ('A'), ('A'), ('A'), ('A'),
+('B'), ('B'), ('B'), ('B'), ('B'),
+('C'), ('C'), ('C'), ('C'), ('C');
 
 CREATE TABLE vaga_veiculo (
     id_vaga_veiculo serial primary key,
     entrada timestamp DEFAULT current_timestamp,
-    saida timestamp DEFAULT current_timestamp + interval '2 hours',
-    id_veiculo integer references veiculo(id),
-    id_vaga integer references vaga(id)
+    saida timestamp DEFAULT current_timestamp + INTERVAL '2 hours',
+    id_veiculo integer REFERENCES veiculo(id),
+    id_vaga integer REFERENCES vaga(id)
 );
 
 INSERT INTO vaga_veiculo (id_veiculo, id_vaga) VALUES 
@@ -70,13 +80,13 @@ INSERT INTO vaga_veiculo (id_veiculo, id_vaga) VALUES
 (3, 3);
 
 INSERT INTO vaga_veiculo (entrada, saida, id_veiculo, id_vaga) VALUES 
-('2023-05-20 12:00:00', '2023-05-21 10:15:00', 1, 2);
+('2023-05-20 12:00:00', '2023-05-21 01:37:00', 1, 2);
 
 -- 2)
-SELECT placa, ano as ano_lancamento FROM veiculo WHERE id = 1;
+SELECT placa, ano as ano_de_lancamento FROM veiculo WHERE id = 1;
 
 -- 3)
-SELECT placa, ano as ano_lancamento FROM veiculo WHERE EXTRACT(YEAR FROM ano) >= 2000;
+SELECT placa, ano as ano_de_lancamento FROM veiculo WHERE EXTRACT(YEAR FROM ano) >= 2000;
 
 -- 4)
 SELECT * FROM veiculo WHERE id_modelo = 1;
@@ -97,6 +107,4 @@ SELECT CAST(AVG(EXTRACT(YEAR FROM age(data_nascimento))) AS INT) AS "Média de i
 -- EXTRACT(EPOCH FROM saida - entrada) => saida - entrada em segundos 
 -- / 3600 => para converter para horas 
 -- CEIL => para arredondar para cima
-SELECT CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 1 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 1;
-SELECT CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 1 na vaga 2 pagou" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
-SELECT CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 3 na vaga 1 pagou" FROM vaga_veiculo WHERE id_veiculo = 3;
+SELECT id_veiculo AS veiculo, id_vaga AS vaga,  CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 1 na vaga 1 pagou" FROM vaga_veiculo;
