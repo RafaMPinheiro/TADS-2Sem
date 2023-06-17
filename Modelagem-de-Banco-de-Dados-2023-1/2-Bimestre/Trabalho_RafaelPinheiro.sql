@@ -46,26 +46,15 @@ INSERT INTO veiculo (chassi, placa, cor, ano, id_cliente, id_modelo) VALUES
 ('XYZ987WVU654TSR32', 'XYZ9876', 'Prata', '1997-01-01', 2, 2),
 ('PQR456MNO321LKJ54', 'PQR4567', 'Azul', '2012-01-01', 3, 2);
 
-CREATE TABLE andar (
-    nome character(1) primary key
-);
-
-INSERT INTO andar (andar_nome) VALUES 
-('A'), ('A'), ('A'), ('A'), ('A'),
-('B'), ('B'), ('B'), ('B'), ('B'),
-('C'), ('C'), ('C'), ('C'), ('C');
-
 CREATE TABLE vaga (
     id serial primary key,
-    nrm_vaga integer not null,
-    andar_nome character(1) REFERENCES andar(nome)
-    --primary key (nrm_vaga, andar)
+    vaga character(9) not null
 );
 
-INSERT INTO vaga (andar_nome) VALUES 
-('A'), ('A'), ('A'), ('A'), ('A'),
-('B'), ('B'), ('B'), ('B'), ('B'),
-('C'), ('C'), ('C'), ('C'), ('C');
+INSERT INTO vaga (vaga) VALUES 
+('A1'), ('A2'), ('A3'), ('A4'), ('A5'),
+('B1'), ('B2'), ('B3'), ('B4'), ('B5'),
+('C1'), ('C2'), ('C3'), ('C4'), ('C5');
 
 CREATE TABLE vaga_veiculo (
     id_vaga_veiculo serial primary key,
