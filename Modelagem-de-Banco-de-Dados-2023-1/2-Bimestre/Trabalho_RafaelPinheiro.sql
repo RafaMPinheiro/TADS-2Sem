@@ -44,7 +44,8 @@ CREATE TABLE veiculo (
 INSERT INTO veiculo (chassi, placa, cor, ano, id_cliente, id_modelo) VALUES 
 ('ABC123DEF456GHI78', 'ABC1234', 'Preto', '2001-01-01', 1, 1),
 ('XYZ987WVU654TSR32', 'XYZ9876', 'Prata', '1997-01-01', 2, 2),
-('PQR456MNO321LKJ54', 'PQR4567', 'Azul', '2012-01-01', 3, 2);
+('PQR456MNO321LKJ54', 'PQR4567', 'Azul', '2012-01-01', 3, 2),
+('EFG562HIJ721DJI98', 'OPA4114', 'Cinza', '2000-02-12', 1, 1);
 
 CREATE TABLE vaga (
     id serial primary key,
@@ -57,11 +58,11 @@ INSERT INTO vaga (vaga) VALUES
 ('C1'), ('C2'), ('C3'), ('C4'), ('C5');
 
 CREATE TABLE vaga_veiculo (
-    id_vaga_veiculo serial primary key,
     entrada timestamp DEFAULT current_timestamp,
     saida timestamp DEFAULT current_timestamp + INTERVAL '2 hours',
     id_veiculo integer REFERENCES veiculo(id),
-    id_vaga integer REFERENCES vaga(id)
+    id_vaga integer REFERENCES vaga(id),
+    primary key (id_veiculo, id_vaga, entrada)
 );
 
 INSERT INTO vaga_veiculo (id_veiculo, id_vaga) VALUES 
@@ -72,7 +73,7 @@ INSERT INTO vaga_veiculo (entrada, saida, id_veiculo, id_vaga) VALUES
 ('2023-05-20 12:00:00', '2023-05-21 01:37:00', 1, 2);
 
 -- 2)
-SELECT placa, ano as ano_de_lancamento FROM veiculo WHERE id = 1;
+SELECT id as determinado_veículo, placa, ano as ano_de_lancamento FROM veiculo WHERE id = 1;
 
 -- 3)
 SELECT placa, ano as ano_de_lancamento FROM veiculo WHERE EXTRACT(YEAR FROM ano) >= 2000;
@@ -84,16 +85,16 @@ SELECT * FROM veiculo WHERE id_modelo = 1;
 SELECT * FROM vaga_veiculo WHERE id_veiculo = 1;
 
 -- 6)
-SELECT id_veiculo AS veiculo, id_vaga AS vaga, saida - entrada AS "Tempo na vaga" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
+SELECT id_veiculo as veiculo, id_vaga as vaga, saida - entrada as "Tempo na vaga" FROM vaga_veiculo WHERE id_veiculo = 1 and id_vaga = 2;
 
 -- 7)
-SELECT COUNT(*) AS "Quantidade de veículos do modelo 2" FROM veiculo WHERE id_modelo = 2;
+SELECT COUNT(*) as "Quantidade de veículos do modelo 2" FROM veiculo WHERE id_modelo = 2;
 
 -- 8)
-SELECT CAST(AVG(EXTRACT(YEAR FROM age(data_nascimento))) AS INT) AS "Média de idade dos clientes" FROM cliente;
+SELECT CasT(AVG(EXTRACT(YEAR FROM age(data_nascimento))) as INT) as "Média de idade dos clientes" FROM cliente;
 
 -- 9)
 -- EXTRACT(EPOCH FROM saida - entrada) => saida - entrada em segundos 
 -- / 3600 => para converter para horas 
 -- CEIL => para arredondar para cima
-SELECT id_veiculo AS veiculo, id_vaga AS vaga,  CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 AS "Veiculo 1 na vaga 1 pagou" FROM vaga_veiculo;
+SELECT id_veiculo as veiculo, id_vaga as vaga,  CasT(CEIL(EXTRACT(EPOCH FROM saida - entrada) / 3600) * 2 as money) as "Veiculo pagou" FROM vaga_veiculo;
